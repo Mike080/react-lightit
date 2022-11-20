@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { getProducts } from './store/catalog/catalogAsyncThunk';
+import { useAppDispatch, useAppSelector } from './store/hooks';
 
-function App() {
+import Product from './components/product';
+
+const App = () => {
+  const { products, isLoading } = useAppSelector(state => state.product);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getProducts());
+  }, [dispatch]);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {isLoading ? (
+        <h1>loading</h1>
+      ) : (
+        <ul>
+          {products?.map(product => (
+            <Product key={product.id} product={product} />
+          ))}
+        </ul>
+      )}
     </div>
   );
-}
+};
 
 export default App;
